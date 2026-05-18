@@ -18,54 +18,61 @@ use App\Models\User;
 class AuthController extends Controller
 {
     public function register(Request $request)
+    // {
+    //     $validator =  Validator::make($request->all(), [
+    //         'first_name' => 'required|string|max:191',
+    //         'last_name' => 'required|string|max:191',
+    //         'email' => 'required|email|max:191|unique:users,email',
+    //         'role' => 'required|string|in:student,teacher',
+    //         'password' => 'required|min:8',
+    //     ]);
+
+    //     if($validator->fails())
+    //     {
+    //         return response()->json([
+    //             'validation_errors'=>$validator->messages(),
+    //         ]);
+    //     }
+    //     else
+    //     {
+    //         $user = User::create([
+    //             'name' => "{$request->first_name} {$request->last_name}",
+    //             'first_name' => $request->first_name,
+    //             'last_name' => $request->last_name,
+    //             'email'=>$request->email,
+    //             'password'=>Hash::make($request->password),
+    //         ]);
+
+    //         if ($request->role === 'student') {
+    //             Student::create([
+    //                 'name' => "{$request->first_name} {$request->last_name}",
+    //                 'user_id' => $user->id,
+    //                 'status' => 0,
+    //             ]);
+    //         } elseif ($request->role === 'teacher') {
+    //             Teacher::create([
+    //                 'name' => "{$request->first_name} {$request->last_name}",
+    //                 'user_id' => $user->id,
+    //                 'status' => 0,
+    //             ]);
+    //         }
+
+    //         $token = $user->createToken($user->email.'_Token')->plainTextToken;
+
+    //         return response()->json([
+    //             'status'=>201,
+    //             'username'=>$user->name,
+    //             'token'=>$token,
+    //             'message'=>'Registered Successfully',
+    //         ]);
+    //     }
+    // }
+
     {
-        $validator =  Validator::make($request->all(), [
-            'first_name' => 'required|string|max:191',
-            'last_name' => 'required|string|max:191',
-            'email' => 'required|email|max:191|unique:users,email',
-            'role' => 'required|string|in:student,teacher',
-            'password' => 'required|min:8',
-        ]);
-
-        if($validator->fails())
-        {
-            return response()->json([
-                'validation_errors'=>$validator->messages(),
-            ]);
-        }
-        else
-        {
-            $user = User::create([
-                'name' => "{$request->first_name} {$request->last_name}",
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email'=>$request->email,
-                'password'=>Hash::make($request->password),
-            ]);
-
-            if ($request->role === 'student') {
-                Student::create([
-                    'name' => "{$request->first_name} {$request->last_name}",
-                    'user_id' => $user->id,
-                    'status' => 0,
-                ]);
-            } elseif ($request->role === 'teacher') {
-                Teacher::create([
-                    'name' => "{$request->first_name} {$request->last_name}",
-                    'user_id' => $user->id,
-                    'status' => 0,
-                ]);
-            }
-
-            $token = $user->createToken($user->email.'_Token')->plainTextToken;
-
-            return response()->json([
-                'status'=>201,
-                'username'=>$user->name,
-                'token'=>$token,
-                'message'=>'Registered Successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 403,
+            'message' => 'Registration is disabled.',
+        ], 403);
     }
 
     public function login(Request $request) {
@@ -81,6 +88,13 @@ class AuthController extends Controller
         }
         else
         {
+
+            if (strtolower($request->email) !== 'bernavschin@gmail.com') {
+                return response()->json([
+                    'status' => 403,
+                    'message' => 'Access denied.',
+                ], 403);
+            }
             $user = User::where('email', $request->email)->first();
  
             if (! $user || ! Hash::check($request->password, $user->password)) {
